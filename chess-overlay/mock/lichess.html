@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>lichess mock</title>
+<style>
+  body {
+    margin: 0;
+    background: #161512;
+    color: #b8b8b8;
+    font: 13px/1.4 system-ui, sans-serif;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+  }
+  .wrap { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+  cg-board {
+    position: relative;
+    width: 480px;
+    height: 480px;
+    display: block;
+    background: conic-gradient(#b58863 90deg, #f0d9b5 90deg 180deg, #b58863 180deg 270deg, #f0d9b5 270deg) 0 0/25% 25%;
+  }
+  cg-board piece {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    line-height: 1;
+    font-family: "Segoe UI Symbol", serif;
+  }
+  piece.white { color: #fff; text-shadow: 0 0 2px #000, 0 1px 0 #999; }
+  piece.black { color: #111; text-shadow: 0 0 2px #fff2; }
+  .note { opacity: .6; }
+</style>
+</head>
+<body>
+<div class="wrap orientation-white">
+  <cg-board id="board"></cg-board>
+  <div class="note">mock lichess board — plays 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6</div>
+</div>
+
+<script src="../lib/chess.js"></script>
+<script src="../src/engine.js"></script>
+<script src="../src/reader.js"></script>
+<script src="../src/overlay.js"></script>
+<script src="../src/content.js"></script>
+<script>
+  (function () {
+    var NAMES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' }
+    var GLYPH = { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' }
+    var board = document.getElementById('board')
+    var game = new Chess()
+
+    function render() {
+      board.querySelectorAll('piece').forEach(function (p) { p.remove() })
+      var size = board.getBoundingClientRect().width / 8
+      var rows = game.board()
+      for (var r = 0; r < 8; r++) {
+        for (var f = 0; f < 8; f++) {
+          var piece = rows[r][f]
+          if (!piece) continue
+          var el = document.createElement('piece')
+          el.className = (piece.color === 'w' ? 'white ' : 'black ') + NAMES[piece.type]
+          el.style.transform = 'translate(' + (f * size) + 'px, ' + (r * size) + 'px)'
+          el.textContent = GLYPH[piece.type]
+          board.appendChild(el)
+        }
+      }
+    }
+
+    render()
+
+    var moves = ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']
+    var i = 0
+    setInterval(function () {
+      if (i >= moves.length) return
+      game.move(moves[i++])
+      render()
+    }, 1600)
+  })()
+</script>
+</body>
+</html>

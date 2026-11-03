@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Best Move Overlay",
+  "version": "1.0.0",
+  "description": "Reads the board on chess.com and lichess and draws the engine's best move on top of it.",
+  "minimum_chrome_version": "102",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.chess.com/*",
+        "*://*.lichess.org/*"
+      ],
+      "js": [
+        "lib/chess.js",
+        "src/engine.js",
+        "src/reader.js",
+        "src/overlay.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

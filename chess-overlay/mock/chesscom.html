@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>chess.com mock</title>
+<style>
+  body {
+    margin: 0;
+    background: #312e2b;
+    color: #b8b8b8;
+    font: 13px/1.4 system-ui, sans-serif;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+  }
+  .wrap { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+  wc-chess-board {
+    position: relative;
+    width: 480px;
+    height: 480px;
+    display: block;
+    background: conic-gradient(#769656 90deg, #eeeed2 90deg 180deg, #769656 180deg 270deg, #eeeed2 270deg) 0 0/25% 25%;
+  }
+  .piece {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    line-height: 1;
+    font-family: "Segoe UI Symbol", serif;
+  }
+  .piece.wp, .piece.wn, .piece.wb, .piece.wr, .piece.wq, .piece.wk { color: #fff; text-shadow: 0 0 2px #000, 0 1px 0 #999; }
+  .piece.bp, .piece.bn, .piece.bb, .piece.br, .piece.bq, .piece.bk { color: #111; }
+  .note { opacity: .6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <wc-chess-board id="board"></wc-chess-board>
+  <div class="note">mock chess.com board — plays 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6</div>
+</div>
+
+<script src="../lib/chess.js"></script>
+<script src="../src/engine.js"></script>
+<script src="../src/reader.js"></script>
+<script src="../src/overlay.js"></script>
+<script src="../src/content.js"></script>
+<script>
+  (function () {
+    var GLYPH = { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' }
+    var board = document.getElementById('board')
+    var game = new Chess()
+
+    // chess.com puts pieces as .piece.wp.square-52 where 5 = file e, 2 = rank 2
+    function render() {
+      board.querySelectorAll('.piece').forEach(function (p) { p.remove() })
+      var rows = game.board()
+      for (var r = 0; r < 8; r++) {
+        for (var f = 0; f < 8; f++) {
+          var piece = rows[r][f]
+          if (!piece) continue
+          var file = f + 1
+          var rank = 8 - r
+          var el = document.createElement('div')
+          el.className = 'piece ' + piece.color + piece.type + ' square-' + file + rank
+          el.style.left = (f * 12.5) + '%'
+          el.style.top = (r * 12.5) + '%'
+          el.textContent = GLYPH[piece.type]
+          board.appendChild(el)
+        }
+      }
+    }
+
+    render()
+
+    var moves = ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']
+    var i = 0
+    setInterval(function () {
+      if (i >= moves.length) return
+      game.move(moves[i++])
+      render()
+    }, 1600)
+  })()
+</script>
+</body>
+</html>
