@@ -8,4 +8,4 @@ How to upload it and use it.
 4.<img width="454" height="232" alt="image" src="https://github.com/user-attachments/assets/5ff92bfe-eb80-4300-8e2b-eac06b634d21" />
   When done correctly It should look like this.
   <img width="964" height="936" alt="image" src="https://github.com/user-attachments/assets/a81d447d-13ed-4111-838c-1c1fce3d1b3e" />
-  You should see an arrow pointing the best move like this!
+  You should see an arrow pointing the best move like this! read the README in the overlay for more info on how to use it.
